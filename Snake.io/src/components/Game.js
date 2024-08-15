@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, Dimensions } from "react-native"
 import { PanGestureHandler, } from "react-native-gesture-handler"
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Direction } from "../types";
-import * as Haptics from "expo-haptic";
+import * as Haptics from "expo-haptics";
 
 const { height } = Dimensions.get("window");
 import {
@@ -42,6 +42,7 @@ const Game = () => {
         maxY: ROWS - 1,
     };
 
+    
         function resetGame( ) {
             setSnake(SNAKE_START);
             setDirection(Direction.Right);
@@ -58,7 +59,7 @@ const Game = () => {
             }   
         }, [snake, isGameOver, isGamePaused]);
 
-    function handlerGesture(event) {
+    function handleGesture(event) {
         const { translationX , translationY } = event.nativeEvent;
         
         if(Math.abs(translationX) > Math.abs(translationY)) {
@@ -87,10 +88,10 @@ const Game = () => {
                 head.x += 1;
                 break;
             case Direction.Down:
-                head.x += 1;
+                head.y += 1;
                 break;
             case Direction.Up:
-                head.x += 1;
+                head.y += 1;
                 break;
             default:
                 break;
@@ -120,7 +121,7 @@ const Game = () => {
     }
 
     function testEatsFood(snakeHead, foodLocation) {
-        return snakeHead.x == foodLocation.x && snakeHead.y == foodLocation;
+        return snakeHead.x == foodLocation.x && snakeHead.y == foodLocation.y;
     }
 
     function newFoodPosition() {
@@ -135,7 +136,7 @@ const Game = () => {
     }, [food]);
 
     return (
-        <PanGestureHandler onGestureEvent={handlerGesture}>
+        <PanGestureHandler onGestureEvent={handleGesture}>
             <SafeAreaView style={styles.container}>
                 <Header
                     top={insets.top}
@@ -144,8 +145,8 @@ const Game = () => {
                     pause={() => setIsGamePaused((prev) => !prev)}
                     reload={() => setIsGameOver((prev) => !prev)}
                 />
-                <Board rows = {ROWS} cols={COLS} top={insets.top} />
-                <Snake snake = {snake} top= {insets.top} />
+                <Board rows={ROWS} cols={COLS} top={insets.top} />
+                <Snake snake={snake} top={insets.top} />
                 { RamdomFood }
             </SafeAreaView>
         </PanGestureHandler>
