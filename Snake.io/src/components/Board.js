@@ -8,7 +8,7 @@ const Board = ({ rows, cols, top }) => {
     return (
         <View style={[styles.board, { top: HEADER_HEIGHT + top}]}>
             {dots.map((_, index) => (
-                <View style={styles.pixel} key={index}> </View>
+                <View style={styles.pixel} key={index}></View>
             ))}
         </View>
     )
