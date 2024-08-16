@@ -17,6 +17,9 @@ const Header = ({top, score, paused, pause, reload}) =>{
 return (
     <View style={[styleHeader, styles.header]}>
         <TouchableOpacity onPress={reload}>
+            <Ionicons name="reload" size={26} color={colors.p6} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={pause}>
             <Ionicons 
             name={paused ? "play" : "pause"}
             size={26}

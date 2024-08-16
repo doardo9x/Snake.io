@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.p5,
         justifyContent: "center",
         alignItems: "center",
-    }
-})
+    },
+});
 
 export default Board

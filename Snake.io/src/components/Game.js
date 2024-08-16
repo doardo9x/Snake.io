@@ -42,121 +42,122 @@ const Game = () => {
         maxY: ROWS - 1,
     };
 
-    
-        function resetGame( ) {
-            setSnake(SNAKE_START);
-            setDirection(Direction.Right);
-        }
 
-        useEffect(() => {
-            if(!isGameOver) {
-                const speedInterval = setInterval (() => {
-                    !isGamePaused && moveSnake();
-                }, SPEED);
+    function resetGame() {
+        setSnake(SNAKE_START);
+        setDirection(Direction.Rigth);
+    }
+    
+    useEffect(() => {
+        if (!isGameOver) {
+            const speedInterval = setInterval(() => {
+                !isGamePaused && moveSnake();
+            }, SPEED);
                 return () => clearInterval(speedInterval);
-            } else {
-                resetGame();
-            }   
-        }, [snake, isGameOver, isGamePaused]);
+        } else {
+            resetGame();
+        }
+    }, [snake, isGameOver, isGamePaused]);
 
     function handleGesture(event) {
-        const { translationX , translationY } = event.nativeEvent;
-        
-        if(Math.abs(translationX) > Math.abs(translationY)) {
+        const { translationX, translationY } = event.nativeEvent;
+
+        if (Math.abs(translationX) > Math.abs(translationY)) {
             if (translationX > 0) {
                 setDirection(Direction.Right)
             } else {
                 setDirection(Direction.Left)
             }
-        } else {
+          } else {
             if (translationY > 0) {
-                setDirection(direction.Down)
+                setDirection(Direction.Down)
             } else {
                 setDirection(Direction.Up)
             }
+          }
         }
-    }
 
-    function moveSnake() {
-        const head = { ...snake[0] };
+        function moveSnake() {
+            const head = { ...snake[0] };
 
-        switch(direction) {
-            case Direction.Right:
-                head.x += 1;
-                break;
-            case Direction.Left:
-                head.x += 1;
-                break;
-            case Direction.Down:
-                head.y += 1;
-                break;
-            case Direction.Up:
-                head.y += 1;
-                break;
-            default:
-                break;
-        }
-    if (testGameOver(head)) {
-        setIsGameOver(true);
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-        return;
-    }
-        if (testEatsFood(head, food)) {
+            switch (direction) {
+                case Direction.Right:
+                    head.x += 1;
+                    break;
+                case Direction.Left:
+                    head.x -= 1;
+                    break;
+                case Direction.Down:
+                    head.y += 1;
+                    break;
+                case Direction.Up:
+                    head.y -= 1;
+                    break;
+                default:
+                    break;
+            }
+            if (testGameOver(head)) {
+                setIsGameOver(true);
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                return;
+            }
+            if (testEatsFood(head, food)) {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                 setFood(newFoodPosition(limits));
                 setSnake([head, ...snake]);
                 setScore((prevScore) => prevScore + INCREMENT);
-        } else {
+            } else {
                 setSnake([head, ...snake.slice(0, -1)]);
             }
-    }
-
-    function testGameOver(snakeHead) {
-        return ( 
-            snakeHead.x < limits.minX ||
-            snakeHead.x < limits.maxX ||
-            snakeHead.y < limits.minY ||
-            snakeHead.y < limits.maxY 
-        );
-    }
-
-    function testEatsFood(snakeHead, foodLocation) {
-        return snakeHead.x == foodLocation.x && snakeHead.y == foodLocation.y;
-    }
-
-    function newFoodPosition() {
-        return {
-            x: Math.floor(Math.ramdom() * limits.maxX),
-            y: Math.floor(Math.ramdom() * limits.maxY),
         }
-    };
 
-    const RamdomFood = useMemo(() => {
-        return <Food coords={{ x: food.x, y: food.y }} top={insets.top} />;
-    }, [food]);
+        function testGameOver(snakeHead) {
+            return (
+                snakeHead.x < limits.minX ||
+                snakeHead.x > limits.maxX ||
+                snakeHead.y < limits.minY ||
+                snakeHead.y > limits.maxY
+            );
+        }
 
-    return (
-        <PanGestureHandler onGestureEvent={handleGesture}>
-            <SafeAreaView style={styles.container}>
-                <Header
-                    top={insets.top}
-                    score={score}
-                    paused={isGamePaused}
-                    pause={() => setIsGamePaused((prev) => !prev)}
-                    reload={() => setIsGameOver((prev) => !prev)}
-                />
-                <Board rows={ROWS} cols={COLS} top={insets.top} />
-                <Snake snake={snake} top={insets.top} />
-                { RamdomFood }
-            </SafeAreaView>
-        </PanGestureHandler>
+        function testEatsFood(snakeHead, foodLocation) {
+            return snakeHead.x == foodLocation.x && snakeHead.y == foodLocation.y;
+        }
+
+        function newFoodPosition() {
+            return {
+                x: Math.floor(Math.random() * limits.maxX),
+                y: Math.floor(Math.random() * limits.maxY),
+            }
+        };
+
+        const RandomFood = useMemo(() => {
+            return <Food coords={{ x: food.x, y: food.y }} top={insets.top} />;
+        }, [food]);
+
+        return (
+            <PanGestureHandler onGestureEvent={handleGesture}>
+                <SafeAreaView style={styles.container}>
+                    <Header
+                        top={insets.top}
+                        score={score}
+                        paused={isGamePaused}
+                        pause={() => setIsGamePaused((prev) => !prev)}
+                        reload={() => setIsGameOver((prev) => !prev)}
+                      />
+                      <Board rows={ROWS} cols={COLS} top={insets.top} />
+                      <Snake snake={snake} top={insets.top} />
+                      { RandomFood }
+                </SafeAreaView>
+            </PanGestureHandler>
         )
-}
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: colors.p6,
-        flex: 1,
-    },
-})
+    }
+
+    const styles = StyleSheet.create({
+        container: {
+            backgroundColor: colors.p6,
+            flex: 1,
+        },
+    })
 
 export default Game
